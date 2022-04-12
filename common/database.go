@@ -5,8 +5,6 @@ import (
 	"xorm.io/xorm"
 )
 
-var engine *xorm.Engine
-
 func InitDb() *xorm.Engine {
 	driverName := "mysql"
 	//host := "localhost"
@@ -26,8 +24,4 @@ func InitDb() *xorm.Engine {
 		panic("failed to connect database,err:" + err.Error())
 	}
 	return db
-}
-
-func GetDB() *xorm.Engine {
-	return engine
 }

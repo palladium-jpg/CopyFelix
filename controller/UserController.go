@@ -6,18 +6,23 @@ import (
 	"CopyFelix/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"xorm.io/xorm"
 )
 
+var db *xorm.Engine
+
 func Register(context *gin.Context) {
 
-	db := common.GetDB()
+	db = common.InitDb()
+	er := db.Sync2(new(model.User))
 
+	if er != nil {
+		log.Default()
+	}
 	name := context.PostForm("Name")
-
 	telephone := context.PostForm("Telephone")
-
 	password := context.PostForm("password")
 
 	if len(telephone) != 11 {
@@ -40,20 +45,27 @@ func Register(context *gin.Context) {
 	if len(name) == 0 {
 		name = util.RandomString(10)
 	}
+
 	if isTelephoneExist(db, telephone) {
 		context.JSON(http.StatusUnprocessableEntity, "用户已经存在")
 		return
 	}
 	//log.Panicln(name, telephone, password)
+	//
+	//newUser := new(model.User)
+	//newUser.Name = name
+	//newUser.Password = password
+	//newUser.Telephone = telephone
 
-	newUser := new(model.User)
-	newUser.Name = name
-	newUser.Password = password
-	newUser.Telephone = telephone
+	newUser := model.User{
+		Name:      name,
+		Telephone: telephone,
+		Password:  password,
+	}
 
-	affeced, err := db.Insert(newUser)
+	affected, err := db.Insert(&newUser)
 	if err != nil {
-		fmt.Println(affeced)
+		fmt.Println(affected)
 	}
 
 	context.JSON(200, gin.H{

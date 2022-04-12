@@ -1,24 +1,22 @@
 package main
 
 import (
-	"CopyFelix/common"
-	"CopyFelix/model"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
 )
+
+var r *gin.Engine
 
 func main() {
 	//fmt.Println("Hello World!!!")
 	//db := InitDb()
 	//defer db.Close()
-	db := common.GetDB()
-	er := db.Sync2(new(model.User))
-	if er != nil {
-		log.Default()
-	}
-	r := gin.Default()
+	//db = common.InitDb()
+	r = gin.Default()
 	r = CollectRoute(r)
-	panic(r.Run())
+	err := r.Run()
+	if err != nil {
+		return
+	}
 
 }
