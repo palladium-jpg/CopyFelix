@@ -141,11 +141,28 @@ func Login(context *gin.Context) {
 		return
 	}
 	//发放token
-	token := "11"
+	token, erT := common.ReleaseToken(user)
+	if erT != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"code": 500,
+			"msg":  "token生成异常",
+		})
+		log.Printf("token generate error %v", erT)
+		return
+	}
+
 	context.JSON(200, gin.H{
 		"code": 200,
 		"data": gin.H{"token": token},
 		"msg":  "登陆成功",
 	})
 	//
+}
+
+func Info(context *gin.Context) {
+	user, _ := context.Get("user")
+	context.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"data": gin.H{"user": user},
+	})
 }
