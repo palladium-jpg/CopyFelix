@@ -1,0 +1,10 @@
+
+
+source:
+
+datasource:
+  driverName : mysql
+  database : ginhello
+  username : root
+  password : 20030531lizhe
+  charset : utf8

@@ -2,7 +2,9 @@ package controller
 
 import (
 	"CopyFelix/common"
+	"CopyFelix/dto"
 	"CopyFelix/model"
+	"CopyFelix/response"
 	"CopyFelix/util"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -27,19 +29,24 @@ func Register(context *gin.Context) {
 	password := context.PostForm("password")
 
 	if len(telephone) != 11 {
-		context.JSON(http.StatusUnprocessableEntity, gin.H{
-			"code":      422,
-			"msg":       "手机号码必须为11位",
-			"telephone": telephone,
-		})
+		response.Response(
+			context,
+			http.StatusUnprocessableEntity,
+			422,
+			nil,
+			"手机号码必须为11位",
+		)
 		return
 	}
 
 	if len(password) < 6 {
-		context.JSON(http.StatusUnprocessableEntity, gin.H{
-			"code": 422,
-			"msg":  "密码不能少于六位",
-		})
+		response.Response(
+			context,
+			http.StatusUnprocessableEntity,
+			422,
+			nil,
+			"密码不能少于六位",
+		)
 		return
 	}
 
@@ -59,10 +66,13 @@ func Register(context *gin.Context) {
 	//newUser.Telephone = telephone
 	hasedPassword, er2 := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if er2 != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"code": 500,
-			"msg":  "加密错误",
-		})
+		response.Response(
+			context,
+			http.StatusInternalServerError,
+			500,
+			nil,
+			"加密错误",
+		)
 		return
 	}
 
@@ -77,9 +87,7 @@ func Register(context *gin.Context) {
 		fmt.Println(affected)
 	}
 
-	context.JSON(200, gin.H{
-		"msg": "注册成功",
-	})
+	response.Success(context, nil, "注册成功")
 
 }
 
@@ -151,11 +159,7 @@ func Login(context *gin.Context) {
 		return
 	}
 
-	context.JSON(200, gin.H{
-		"code": 200,
-		"data": gin.H{"token": token},
-		"msg":  "登陆成功",
-	})
+	response.Success(context, gin.H{"token": token}, "登录成功")
 	//
 }
 
@@ -163,6 +167,6 @@ func Info(context *gin.Context) {
 	user, _ := context.Get("user")
 	context.JSON(http.StatusOK, gin.H{
 		"code": 200,
-		"data": gin.H{"user": user},
+		"data": gin.H{"user": dto.ToUserDto(user.(model.User))},
 	})
 }
