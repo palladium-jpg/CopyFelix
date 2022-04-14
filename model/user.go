@@ -4,12 +4,13 @@ import "time"
 
 type User struct {
 	//gorm.Model
-	ID        uint `xorm:"primarykey"`
+
+	ID        uint `xorm:"int  null pk autoincr"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Name      string `xorm:"type:varchar(20);not null"`
-	Telephone string `xorm:"varchar(110);not null;primary key"`
-	Password  string `xorm:"varchar(110);not null"`
+	Name      string `xorm:"varchar(20) null"`
+	Telephone string `xorm:"varchar(110) null unique"`
+	Password  string `xorm:"varchar(110) null"`
 }
 
 //type Model struct {

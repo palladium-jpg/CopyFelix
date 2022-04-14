@@ -150,6 +150,7 @@ func Login(context *gin.Context) {
 	}
 	//发放token
 	token, erT := common.ReleaseToken(user)
+
 	if erT != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"code": 500,

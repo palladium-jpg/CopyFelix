@@ -25,6 +25,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		tokenString = tokenString[7:]
 
 		token, claims, err := common.ParseToken(tokenString)
+		//对token解码
 		if err != nil || !token.Valid {
 			context.JSON(http.StatusUnauthorized, gin.H{
 				"code": 401,
